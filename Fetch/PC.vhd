@@ -14,16 +14,17 @@ port(
 end entity; 
 
 ARCHITECTURE PC_arch OF PC IS
+signal PC_current : std_logic_vector(15 downto 0) := (Others => '0');
 BEGIN
 
-PROCESS(clk)
+PROCESS(clk, mux_entry)
 BEGIN
 
 	IF (rising_edge(clk)) then
-		address <= mux_entry;
+		PC_current <= mux_entry;
 	END IF;
 	
 END PROCESS;
-
+address <= PC_current;
 END PC_arch;
 
