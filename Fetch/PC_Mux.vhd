@@ -24,22 +24,14 @@ end entity;
 
 ARCHITECTURE PC_Mux_arch OF PC_Mux IS
 BEGIN
-if selector = "000" then
-    address <= PC;
-elsif selector = "001" then
-    address <= PC_plus1;
-elsif selector = "010" then
-    address <= PC_`lus2;;
-elsif selector = "011" then
-    address <= jump;
-elsif selector = "100" then
-    address <= IM_0;
-elsif selector = "101" then
-    address <= IM_1;
-elsif selector = "110" then
-    address <= IM_2;
-elsif selector = "111" then
-    address <= interrupt;
-end if;
+with selector select
+    address <= PC when "000",
+               PC_plus1 when "001",
+               PC_plus2 when "010",
+               jump when "011",
+               IM_0 when "100",
+               IM_1 when "101",
+               IM_2 when "110",
+               interrupt when "111",
+               (others => '0') when others;
 END PC_Mux_arch;
-end architecture;
