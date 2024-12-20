@@ -39,8 +39,8 @@ BEGIN
     ELSE 
         PC_selector <= "001";
     END IF;
-    bit_10(0) <= instruction(10) ;
-	 bit_10(15 downto 1) <= (others => '0');
-    interrupt <= std_logic_vector(unsigned(IM_3) + unsigned(bit_10));
 END PROCESS;
+bit_10(0) <= instruction(10) ;
+bit_10(15 downto 1) <= (others => '0');
+interrupt <= std_logic_vector(unsigned(IM_3) + unsigned(bit_10));
 END PC_Decoder_arch;
