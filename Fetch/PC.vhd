@@ -4,7 +4,7 @@ use ieee.numeric_std.all;
 
 entity PC is 
 generic(  
-	word_width : integer := 8 ); 
+	word_width : integer := 16 ); 
 port(
 	--inputs
 	clk 		: in std_logic;  
