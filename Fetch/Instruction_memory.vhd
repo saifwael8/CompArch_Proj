@@ -10,7 +10,9 @@ port(
 	--inputs 
 	address 	: in std_logic_vector(address_bits-1 downto 0);
 	--outputs
-	instruction 	: out std_logic_vector(word_width-1 downto 0) 
+	instruction : out std_logic_vector(word_width-1 downto 0); 
+	immediate 	: out std_logic_vector(word_width-1 downto 0);
+	IM_3 		: out std_logic_vector(word_width-1 downto 0)
 	); 
 end entity;
 
@@ -23,5 +25,7 @@ SIGNAL memory: Rom_type := (
 BEGIN 
 
 instruction <= memory(to_integer(unsigned(address)));
+immediate <= memory(to_integer(unsigned(address))+1);
+IM_3 <= memory(3);
 
 END ARCHITECTURE;
