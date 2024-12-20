@@ -3,14 +3,13 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity PC is 
-generic(  
-	word_width : integer := 16 ); 
+
 port(
 	--inputs
 	clk 		: in std_logic;  
-	mux_entry 	: in std_logic_vector(word_width-1 downto 0);
+	mux_entry 	: in std_logic_vector(15 downto 0);
 	--outputs
-	address 	: out std_logic_vector(word_width-1 downto 0) 
+	address 	: out std_logic_vector(15 downto 0) 
 	); 
 end entity; 
 
