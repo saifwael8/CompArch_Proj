@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 entity Instruction_memory is 
 port(
 	--inputs 
-	address 	: in std_logic_vector(12 downto 0);
+	address 	: in std_logic_vector(11 downto 0);
 	--outputs
 	instruction : out std_logic_vector(15 downto 0); 
 	immediate 	: out std_logic_vector(15 downto 0);
