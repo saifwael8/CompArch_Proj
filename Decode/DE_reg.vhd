@@ -7,7 +7,7 @@ port( clk: in std_logic;
 		flush: in std_logic;
 		stall: in std_logic;
 
-		Control_Bus: in std_logic_vector(24 downto 0);
+		Control_Bus: in std_logic_vector(23 downto 0);
 		RD1: in std_logic_vector(15 downto 0);
 		RD2: in std_logic_vector(15 downto 0);
 		Imm: in std_logic_vector(15 downto 0);
@@ -16,7 +16,7 @@ port( clk: in std_logic;
 		WA: in std_logic_vector(2 downto 0);
 		PC_1: in std_logic_vector(15 downto 0);
 
-		Control_Bus_out: out std_logic_vector(24 downto 0);
+		Control_Bus_out: out std_logic_vector(23 downto 0);
 		RD1_out: out std_logic_vector(15 downto 0);
 		RD2_out: out std_logic_vector(15 downto 0);
 		Imm_out: out std_logic_vector(15 downto 0);
