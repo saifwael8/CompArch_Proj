@@ -3,22 +3,21 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity PC_Mux is 
-generic(  
-	word_width : integer := 8 ); 
+ 
 port(
 	--inputs
 	selector 	: in std_logic_vector(2 downto 0);  
-    PC       	: in std_logic_vector(word_width-1 downto 0);
-	PC_plus1 	: in std_logic_vector(word_width-1 downto 0);
-    PC_plus2 	: in std_logic_vector(word_width-1 downto 0);
-	jump 	    : in std_logic_vector(word_width-1 downto 0);
-	IM_0 	    : in std_logic_vector(word_width-1 downto 0);
-	IM_1 	    : in std_logic_vector(word_width-1 downto 0);
-	IM_2 	    : in std_logic_vector(word_width-1 downto 0);
-	interrupt 	: in std_logic_vector(word_width-1 downto 0);
+    PC       	: in std_logic_vector(15 downto 0);
+	PC_plus1 	: in std_logic_vector(15 downto 0);
+    PC_plus2 	: in std_logic_vector(15 downto 0);
+	jump 	    : in std_logic_vector(15 downto 0);
+	IM_0 	    : in std_logic_vector(15 downto 0);
+	IM_1 	    : in std_logic_vector(15 downto 0);
+	IM_2 	    : in std_logic_vector(15 downto 0);
+	interrupt 	: in std_logic_vector(15 downto 0);
 
 	--outputs
-	address 	: out std_logic_vector(word_width-1 downto 0) 
+	address 	: out std_logic_vector(15 downto 0) 
 	); 
 end entity;
 
