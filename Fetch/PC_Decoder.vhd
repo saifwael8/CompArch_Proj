@@ -12,7 +12,7 @@ port(
     SP_exception: in std_logic;
     reset       : in std_logic;
     --outputs
-    PC_selector : out std_logic_vector(4 downto 0);
+    PC_selector : out std_logic_vector(2 downto 0);
     interrupt   : out std_logic_vector(15 downto 0)
     ); 
 end entity;
@@ -23,21 +23,21 @@ BEGIN
 PROCESS(instruction, PC_Src, invalid_mem, SP_exception, reset)
 BEGIN
     IF (reset = '1') then
-        PC_selector <= "00100";
+        PC_selector <= "100";
     ELSIF (SP_exception = '1') then
-        PC_selector <= "00101";
+        PC_selector <= "101";
     ELSIF (invalid_mem = '1') then
-        PC_selector <= "00110";
+        PC_selector <= "110";
     ELSIF (PC_Src = '1') then
-        PC_selector <= "00011";
+        PC_selector <= "011";
     ELSIF (instruction(15 downto 11) > "0100" and instruction(15 downto 11) < "01101") then
-        PC_selector <= "00010";
+        PC_selector <= "010";
     ELSIF (instruction(15 downto 11) = "00001") then
-        PC_selector <= "00000";
+        PC_selector <= "000";
     ELSIF (instruction(15 downto 11) = "10110") then
-        PC_selector <= "11111";
+        PC_selector <= "111";
     ELSE 
-        PC_selector <= "00001";
+        PC_selector <= "001";
     END IF;
     bit_10(0) <= instruction(10) ;
 	 bit_10(15 downto 1) <= (others => '0');
