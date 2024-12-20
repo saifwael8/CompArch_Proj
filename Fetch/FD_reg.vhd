@@ -3,38 +3,44 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity FD_reg is
-port( clk: in std_logic;
-		rst: in std_logic;
-		enable: in std_logic;
+port( 	
+		--inputs
+		clk: in std_logic;
+		flush: in std_logic;
+		stall: in std_logic;
 		instruction: in std_logic_vector(15 downto 0);
-		opcode: out std_logic_vector(2 downto 0);
-		src1: out std_logic_vector(2 downto 0);
-		src2: out std_logic_vector(2 downto 0);
-		dst: out std_logic_vector(2 downto 0));
-			
+		immediate: in std_logic_vector(15 downto 0);
+		PC_address_in: in std_logic_vector(15 downto 0);
+		--outputs
+		opcode: out std_logic_vector(4 downto 0);
+		RA1: out std_logic_vector(2 downto 0);
+		RA2: out std_logic_vector(2 downto 0);
+		WA: out std_logic_vector(2 downto 0);
+		PC_address_out: out std_logic_vector(15 downto 0)
+	);	
 end entity;
 
 
 architecture FD_arch OF FD_reg IS
 BEGIN
 
-PROCESS(clk,rst)
+PROCESS(clk,flush)
 BEGIN
 
-	IF (rst= '0' AND rising_edge(clk)) then
-			opcode <= "000";
-			src1 <= "000";
-			src2 <= "000";
-			dst <= "000";
+	IF (flush= '0' AND rising_edge(clk)) then
+			opcode <= "00000";
+			RA1 <= "000";
+			RA2 <= "000";
+			WA <= "000";
+			PC_address_out <= PC_address_in;
 
 	ELSIF rising_edge(clk) then
-		IF (enable = '1') then
-			opcode <= instruction(2 downto 0);
-			src1 <= instruction(5 downto 3);
-			src2 <= instruction(8 downto 6);
-			dst <= instruction(11 downto 9);
-		else
-			opcode <= "000";
+		IF (stall = '0') then
+			opcode <= instruction(15 downto 11);
+			RA1 <= instruction(7 downto 5);
+			RA2 <= instruction(4 downto 2);
+			WA <= instruction(10 downto 8);
+			PC_address_out <= PC_address_in;
 		END IF;
 	END IF;
 	

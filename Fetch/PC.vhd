@@ -5,31 +5,23 @@ use ieee.numeric_std.all;
 entity PC is 
 generic(  
 	word_width : integer := 8 ); 
-port( 
-	clk 		: in std_logic; 
-	rst		: in std_logic; 
-	enable 		: in std_logic;  
-	count 	: out std_logic_vector(word_width-1 downto 0) ); 
-	
+port(
+	--inputs
+	clk 		: in std_logic;  
+	mux_entry 	: in std_logic_vector(word_width-1 downto 0);
+	--outputs
+	address 	: out std_logic_vector(word_width-1 downto 0) 
+	); 
 end entity; 
 
 ARCHITECTURE PC_arch OF PC IS
-
-signal D : std_logic_vector(word_width-1 downto 0) := (Others => '0');
 BEGIN
 
-PROCESS(clk,rst)
+PROCESS(clk)
 BEGIN
 
-	IF (rst= '0' AND rising_edge(clk)) then
-			D <= (0 => '1', Others => '0');
-			count <= (Others => '0');
-
-	ELSIF rising_edge(clk) then
-		IF (enable = '1') then
-			D <= std_logic_vector(unsigned(D) + 1);
-			count <= D;
-		END IF;
+	IF (rising_edge(clk)) then
+		address <= mux_entry;
 	END IF;
 	
 END PROCESS;
