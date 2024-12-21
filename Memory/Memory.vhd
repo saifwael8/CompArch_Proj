@@ -18,15 +18,15 @@ port(
 		);
 end entity;
 
-architecture Memory_arch of Memory is
+Architecture Memory_arch of Memory is
 
-signal SInc : std_logic := Control_Bus(4);
-signal SP_enable : std_logic := Control_Bus(5);
-signal DSrc : std_logic := Control_Bus(3);
-signal WB : std_logic := Control_Bus(23);
-signal MR : std_logic := Control_Bus(21);
-signal MW : std_logic := Control_Bus(22);
-signal Input_Memory_Address, Input_Data_Memory, Output_From_Memory, SP_Intermediate : std_logic_vector(15 downto 0); 
+signal SInc : std_logic;
+signal SP_enable : std_logic;
+signal DSrc : std_logic;
+signal WB : std_logic;
+signal MR : std_logic;
+signal MW : std_logic;
+signal Input_Memory_Address, Input_Data_Memory, Output_From_Memory, SP_Intermediate, SP_mux_input : std_logic_vector(15 downto 0); 
 
 component Data_Memory is 
 generic( 
@@ -53,10 +53,21 @@ end component;
 
 begin
 
-SPointer: SP Port Map (clk, SP_enable, SInc, SP_Intermediate);
+SInc <= Control_Bus(4);
+SP_enable <= Control_Bus(5);
+Dsrc <= Control_Bus(3);
+WB <= Control_Bus(23);
+MR <= Control_Bus(21);
+MW <= Control_Bus(22);
+
+PS: SP Port Map (clk, SP_enable, SInc, SP_Intermediate);
+
+with SInc select SP_mux_input <=
+		SP_Intermediate when '0',
+		std_logic_vector(unsigned(SP_Intermediate)+1) when '1', (others => '0') when others;
 
 with SP_enable select Input_Memory_Address <= 
-	ALU_Result when '0', SP_Intermediate when '1', (others => '0') when others;
+	ALU_Result when '0', SP_mux_input when '1', (others => '0') when others;
 
 with DSrc select Input_Data_Memory <= 
 RD2 when '0', PC_plus_1 when '1', (others => '0') when others;
