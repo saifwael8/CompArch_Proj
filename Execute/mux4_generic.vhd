@@ -2,11 +2,10 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 
 ENTITY mux4_generic IS
-GENERIC (n: integer :=8);
-PORT ( in0, in1, in2, in3: IN STD_LOGIC_VECTOR (n-1 downto 0);
+PORT ( in0, in1, in2, in3: IN STD_LOGIC_VECTOR (15 downto 0);
 		 c0, c1, c2, c3: IN STD_LOGIC;
 		 sel : IN STD_LOGIC_VECTOR (1 downto 0);
-		 out1: OUT STD_LOGIC_VECTOR (n-1 downto 0);
+		 out1: OUT STD_LOGIC_VECTOR (15 downto 0);
 		 cout: OUT STD_LOGIC
 		);
 END mux4_generic;
