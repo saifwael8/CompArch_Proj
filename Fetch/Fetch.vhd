@@ -15,7 +15,8 @@ port(
 		--outputs
 		instruction : out std_logic_vector(15 downto 0); 
 		immediate 	: out std_logic_vector(15 downto 0);
-		IM_3 		: out std_logic_vector(15 downto 0)
+		IM_3 		: out std_logic_vector(15 downto 0);
+		PC_address_out: out std_logic_vector(15 downto 0)
 		);
 end entity;
 
@@ -88,4 +89,5 @@ pc_dec: PC_Decoder port map(instruct, im3, PC_Src, invalid_mem, SP_exception, re
 instruction <= instruct;
 immediate <= imm;
 IM_3 <= im3;
+PC_address_out <= pc_1;
 end architecture; 
