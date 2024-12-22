@@ -19,6 +19,7 @@ port(
 		OP1_Selector, OP2_Selector : in std_logic_vector(1 downto 0);
 		
 		PC_plus_1: in std_logic_vector(15 downto 0);
+		EM_RTI: in std_logic;
 		
 		PC_out, ALU_Out: out std_logic_vector(15 downto 0);
 		PCSrc: out std_logic
@@ -73,7 +74,7 @@ with Control_Bus(6) select ALU_Out <=
 	ALU_Result when '0', 
 	Inport when others;
 
-CR: CCR Port Map (clk, ALU_Flags, Restore_Flags, Control_Bus(12), Control_Bus(11), Control_Bus(10), Control_Bus(9), Control_Bus(8), Control_Bus(0), CCR_Flags);	
+CR: CCR Port Map (clk, ALU_Flags, Restore_Flags, Control_Bus(12), Control_Bus(11), Control_Bus(10), Control_Bus(9), Control_Bus(8), EM_RTI, CCR_Flags);	
 
 PC_out(15 downto 13)	<= CCR_Flags;
 PC_out(12 downto 0)<= PC_plus_1(12 downto 0);
