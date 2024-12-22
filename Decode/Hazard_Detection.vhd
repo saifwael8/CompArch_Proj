@@ -26,9 +26,9 @@ PROCESS (FD_RA1,FD_RA2,DE_WA,DE_MR)
 begin
 
     IF ( (FD_RA1=DE_WA OR FD_RA2=DE_WA) AND DE_MR = '1' ) then
-        stall = 1;
+        stall <= 1;
     else
-        stall = 0;
+        stall <= 0;
     end if;
 
 end PROCESS;
