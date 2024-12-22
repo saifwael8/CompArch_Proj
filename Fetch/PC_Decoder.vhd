@@ -11,6 +11,7 @@ port(
     invalid_mem : in std_logic;
     SP_exception: in std_logic;
     reset       : in std_logic;
+    stall       : in std_logic;
     --outputs
     PC_selector : out std_logic_vector(2 downto 0);
     interrupt   : out std_logic_vector(15 downto 0)
@@ -32,7 +33,7 @@ BEGIN
         PC_selector <= "011";
     ELSIF (instruction(15 downto 11) > "0100" and instruction(15 downto 11) < "01101") then
         PC_selector <= "010";
-    ELSIF (instruction(15 downto 11) = "00001") then
+    ELSIF ((instruction(15 downto 11) = "00001")  or (stall = '1'))then
         PC_selector <= "000";
     ELSIF (instruction(15 downto 11) = "10110") then
         PC_selector <= "111";
