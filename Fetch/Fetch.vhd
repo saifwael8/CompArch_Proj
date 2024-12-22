@@ -10,6 +10,7 @@ port(
 		invalid_mem : in std_logic;
 		SP_exception: in std_logic;
 		reset       : in std_logic;
+		stall	    : in std_logic;
 		WD: in std_logic_vector(15 downto 0);
 		--outputs
 		instruction : out std_logic_vector(15 downto 0); 
@@ -68,6 +69,7 @@ port(
     invalid_mem : in std_logic;
     SP_exception: in std_logic;
     reset       : in std_logic;
+	stall       : in std_logic;
     --outputs
     PC_selector : out std_logic_vector(2 downto 0);
     interrupt   : out std_logic_vector(15 downto 0)
@@ -81,7 +83,7 @@ pc_2 <= std_logic_vector(unsigned(address_pc) + 2);
 progc: PC port map(clk, mux_out, address_pc);
 pc_mx: PC_Mux port map(pc_sel, address_pc, pc_1, pc_2, WD, inst_m0, inst_m1, inst_m2, im_int, mux_out);
 inst_mem: Instruction_Memory port map(address_pc(11 downto 0), instruct, imm, im3);
-pc_dec: PC_Decoder port map(instruct, im3, PC_Src, invalid_mem, SP_exception, reset, pc_sel, im_int);
+pc_dec: PC_Decoder port map(instruct, im3, PC_Src, invalid_mem, SP_exception, reset, stall, pc_sel, im_int);
 
 instruction <= instruct;
 immediate <= imm;
