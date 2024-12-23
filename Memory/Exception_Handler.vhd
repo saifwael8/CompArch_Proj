@@ -4,7 +4,7 @@ use ieee.numeric_std.all;
 
 entity Exception_Handler is 
 port( 
-	clk, SP_enable, SInc	: in std_logic; 
+	clk, SP_enable, SInc, MR, MW	: in std_logic; 
 	SP_Address, Memory_Address: in std_logic_vector(15 downto 0);
 	Save_EPC, SP_Exception, Memory_Exception: out std_logic); 
 	
@@ -26,7 +26,7 @@ BEGIN
 			SP_Exception_saved <= '1';
 			Memory_Exception_saved <= '0'; -- PC <= IM[1];
 		
-		ELSIF (unsigned(Memory_Address) > unsigned(max_mem_address)) then
+		ELSIF ((unsigned(Memory_Address) > unsigned(max_mem_address)) and (MW = '1' or MR = '1')) then -- and (mw = 1 or mr = 1)
 			EPC_saved <= '1';
 			SP_Exception_saved <= '0';
 			Memory_Exception_saved <= '1'; -- PC <= IM[2];

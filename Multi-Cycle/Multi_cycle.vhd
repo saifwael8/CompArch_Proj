@@ -28,7 +28,7 @@ port(
 		--outputs
 		instruction : out std_logic_vector(15 downto 0); 
 		immediate 	: out std_logic_vector(15 downto 0);
-		IM_3 		: out std_logic_vector(15 downto 0);
+		--IM_3 		: out std_logic_vector(15 downto 0);
         PC_address_out: out std_logic_vector(15 downto 0)
 		);
 end COMPONENT;
@@ -171,13 +171,14 @@ port(
     );
 end COMPONENT;
 
-COMPONENT Exception_Handler is 
+component Exception_Handler is 
 port( 
-        clk, SP_enable, SInc	: in std_logic; 
-        SP_Address, Memory_Address: in std_logic_vector(15 downto 0);
-        Save_EPC, SP_Exception, Memory_Exception: out std_logic
-); 	
-end COMPONENT;
+	clk, SP_enable, SInc, MR, MW	: in std_logic; 
+	SP_Address, Memory_Address: in std_logic_vector(15 downto 0);
+	Save_EPC, SP_Exception, Memory_Exception: out std_logic); 
+	
+end component; 
+
 
 COMPONENT EPC is 
 port( 
@@ -214,7 +215,7 @@ signal WD: std_logic_vector(15 downto 0); -- from DE reg through to WB and back 
 signal pc_outf: std_logic_vector(15 downto 0); -- from fetch to fd reg
 signal instruction: std_logic_vector(15 downto 0); -- from Fetch to FD reg
 signal immediate: std_logic_vector(15 downto 0); -- from Fetch to FD reg
-signal IM_3: std_logic_vector(15 downto 0); -- from Fetch to FD reg
+--signal IM_3: std_logic_vector(15 downto 0); -- from Fetch to FD reg
 signal stall : std_logic; -- from Hazard Detection to Fetch
 
 signal opcode: std_logic_vector(4 downto 0); -- from FD reg to Decode
@@ -274,7 +275,7 @@ signal Save_EPC: std_logic; -- from Exception Handling to EPC
 signal EPC_out: std_logic_vector(15 downto 0); -- from EPC to Exception Handling
 BEGIN
 
-F: Fetch PORT MAP(clk, pc_src, invld_mem, SP_ex, reset, stall, WD, instruction, immediate, IM_3, pc_outf);
+F: Fetch PORT MAP(clk, pc_src, invld_mem, SP_ex, reset, stall, WD, instruction, immediate, pc_outf);
 FD: FD_reg PORT MAP(clk, flush, stall, instruction, immediate, pc_outf, opcode, RA1, RA2, WA, pc_outfd);
 D: Decode PORT MAP(clk, instruction, pc_src, WA_mw, WD_WB, ctrl_bus_mw(23), ctrl_bus_d, flush_br, RD1, RD2);
 DE: DE_reg PORT MAP(clk, flush, stall, ctrl_bus_d, RD1, RD2, immediate, RA1, RA2, WA, pc_outfd, ctrl_bus_e, RD1_e, RD2_e, immediate_e, RA1_e, RA2_e, WA_e, pc_outde);
@@ -286,7 +287,7 @@ EM: EM_reg PORT MAP(clk, flush, stall, ctrl_bus_e, RD2_e, WA_e, alu_out, pc_oute
 M: Memory PORT MAP(clk, ctrl_bus_em, alu_out_em, RD2_em, pc_outem, SP_address, Memory_address, From_Memory, restore_flags);
 MWB: MWB_reg PORT MAP(clk, stall, pc_src_em, ctrl_bus_m, From_Memory, alu_out_em, WA_m, ctrl_bus_mw, From_Memory_out, From_ALU_out, WA_mw, pc_src_mw);
 FU: Forwarding_Unit PORT MAP(RA1_e, RA2_e, WA_em, WA_mw, ctrl_bus_em(23), ctrl_bus_mw(23), OP1_Selector, OP2_Selector);
-EH: Exception_Handler PORT MAP(clk, ctrl_bus_em(5), ctrl_bus_em(4), SP_address, Memory_address, Save_EPC, SP_ex, invld_mem);
+EH: Exception_Handler PORT MAP(clk, ctrl_bus_em(5), ctrl_bus_em(4), ctrl_bus_em(21)  , ctrl_bus_em(22)  ,  SP_address, Memory_address, Save_EPC, SP_ex, invld_mem);
 e_pc: EPC PORT MAP(clk, Save_EPC, pc_outem, EPC_out);
 
 with ctrl_bus_mw(15) select
