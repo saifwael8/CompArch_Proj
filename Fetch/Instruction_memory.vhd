@@ -10,6 +10,9 @@ port(
 	--outputs
 	instruction : out std_logic_vector(15 downto 0); 
 	immediate 	: out std_logic_vector(15 downto 0);
+	IM_0		: out std_logic_vector(15 downto 0);
+	IM_1		: out std_logic_vector(15 downto 0);
+	IM_2		: out std_logic_vector(15 downto 0);
 	IM_3 		: out std_logic_vector(15 downto 0);
 	IM_3_index  : out std_logic_vector(15 downto 0)
 	); 
@@ -25,6 +28,9 @@ BEGIN
 
 instruction <= memory(to_integer(unsigned(address)));
 immediate <= memory(to_integer(unsigned(address))+1);
+IM_0 <= memory(0);
+IM_1 <= memory(1);
+IM_2 <= memory(2);
 IM_3 <= memory(3);
 IM_3_index <= memory(to_integer(unsigned(add3_index)));
 
