@@ -239,11 +239,11 @@ def assemble_file(input_file, output_file):
 
             # Write the machine code to the output file
         for address in sorted(machine_code):
-            outfile.write(f"{address:04X}: {machine_code[address]}\n")
+            outfile.write(f"mem load -filltype value -filldata  {machine_code[address]} -fillradix symbolic /singlecycle/F/inst_mem/memory({address:04X})\n")
 
 # Main entry point
 if __name__ == "__main__":
     input_file = "AssemblyExample.asm.txt"  # Replace with your input file name if different
-    output_file = "output.mc"          # Replace with your desired output file name
+    output_file = "instruction_memory_initializer.do"          # Replace with your desired output file name
     assemble_file(input_file, output_file)
     print(f"Assembly complete. Machine code written to {output_file}")
