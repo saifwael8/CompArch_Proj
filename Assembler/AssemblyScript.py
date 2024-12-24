@@ -241,10 +241,12 @@ def assemble_file(input_file, output_file):
         file_type = input("Choose Multi-Cycle or Signle-Cycle (M or S): ").upper()
         if(file_type == 'S'):
             for address in sorted(machine_code):
-                outfile.write(f"mem load -filltype value -filldata  {machine_code[address]} -fillradix symbolic /singlecycle/F/inst_mem/memory({address:04X})\n")
+                if(machine_code[address] != "0000000000000000"):
+                    outfile.write(f"mem load -filltype value -filldata  {machine_code[address]} -fillradix symbolic /singlecycle/F/inst_mem/memory({address})\n")
         else:
             for address in sorted(machine_code):
-                outfile.write(f"mem load -filltype value -filldata {machine_code[address]} -fillradix symbolic /multi_cycle/F/inst_mem/memory({address:04X})\n")
+                if(machine_code[address] != "0000000000000000"):
+                    outfile.write(f"mem load -filltype value -filldata {machine_code[address]} -fillradix symbolic /multi_cycle/F/inst_mem/memory({address})\n")
 
 
 # Main entry point
