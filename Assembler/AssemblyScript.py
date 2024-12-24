@@ -238,8 +238,14 @@ def assemble_file(input_file, output_file):
                 print(f"Error processing line: {line}\n{e}")
 
             # Write the machine code to the output file
-        for address in sorted(machine_code):
-            outfile.write(f"mem load -filltype value -filldata  {machine_code[address]} -fillradix symbolic /singlecycle/F/inst_mem/memory({address:04X})\n")
+        file_type = input("Choose Multi-Cycle or Signle-Cycle (M or S): ").upper()
+        if(file_type == 'S'):
+            for address in sorted(machine_code):
+                outfile.write(f"mem load -filltype value -filldata  {machine_code[address]} -fillradix symbolic /singlecycle/F/inst_mem/memory({address:04X})\n")
+        else:
+            for address in sorted(machine_code):
+                outfile.write(f"mem load -filltype value -filldata {machine_code[address]} -fillradix symbolic /multi_cycle/F/inst_mem/memory({address:04X})\n")
+
 
 # Main entry point
 if __name__ == "__main__":
