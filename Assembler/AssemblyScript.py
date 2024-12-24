@@ -120,8 +120,8 @@ def assemble_line(line):
             else:
                 return "0" * 32
             
-            if len(immediate_binary) == 20:
-                immediate_binary = immediate_binary[4:]
+            if len(immediate_binary) > 16:
+                immediate_binary = immediate_binary[8:]
             return f"{OPCODES[opcode]}{dest}00000000{immediate_binary}"
                 
             
@@ -147,8 +147,8 @@ def assemble_line(line):
             else:
                 return "0" * 32
             
-            if len(immediate_binary) == 20:
-                immediate_binary = immediate_binary[4:]            
+            if len(immediate_binary) > 16:
+                immediate_binary = immediate_binary[8:]            
             return f"{OPCODES[opcode]}{dest}{src}00000{immediate_binary}"
         
         if opcode == "STD":
@@ -169,8 +169,8 @@ def assemble_line(line):
             else:
                 return "0" * 32
             
-            if len(immediate_binary) == 20:
-                immediate_binary = immediate_binary[4:]            
+            if len(immediate_binary) > 16:
+                immediate_binary = immediate_binary[8:]            
             return f"{OPCODES[opcode]}000{address}{src}00{immediate_binary}"
             
 
@@ -212,19 +212,32 @@ def assemble_file(input_file, output_file):
 
             # Handle .ORG directives
             if line.upper().startswith(".ORG"):
-                current_address = hex_to_binary(line.split()[1])
+                current_address = int(line.split()[1], 16)
                 continue
 
             try:
-                if line[0] in digits or (line[0] == '0' and line[1] in letters):                    
-                    code = format(hex(int(line)), "016b")
-                    address_bin = format(current_address, "012b")
-                    machine_code[int(current_address)] = code
+                if all(c in "0123456789ABCDEF" for c in line.upper()):  # Check if the line is a valid hex number
+                    code = ""
+                    for i in range(len(line)):
+                        code += format(int(line[i],16), "04b")
+                    if len(code) < 16:
+                        code = "0000" + code
+                    machine_code[current_address] = code
                     current_address += 1
+                else:
+                    if (len(assemble_line(line))) <= 16:
+                        machine_code[current_address] = assemble_line(line)
+                        current_address += 1
+                    else:
+                        machine_code[current_address] = assemble_line(line)[:16]
+                        current_address += 1
+                        machine_code[current_address] = assemble_line(line)[16:]
+                        current_address += 1
+
             except ValueError as e:
                 print(f"Error processing line: {line}\n{e}")
 
-        # Write the machine code to the output file
+            # Write the machine code to the output file
         for address in sorted(machine_code):
             outfile.write(f"{address:04X}: {machine_code[address]}\n")
 
