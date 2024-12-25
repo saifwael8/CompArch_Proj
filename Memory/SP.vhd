@@ -13,7 +13,7 @@ end entity;
 
 ARCHITECTURE SP_arch OF SP IS
 
-signal SP_current : std_logic_vector(15 downto 0) := (Others => '1');
+signal SP_current : std_logic_vector(15 downto 0) := "0000111111111111";
 
 BEGIN
 
