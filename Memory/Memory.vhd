@@ -29,9 +29,6 @@ signal MW : std_logic;
 signal Input_Memory_Address, Input_Data_Memory, Output_From_Memory, SP_Intermediate, SP_mux_input : std_logic_vector(15 downto 0); 
 
 component Data_Memory is 
-generic( 
-	address_bits : integer := 12; 
-	word_width : integer := 16 ); 
 port( 
 	clk 		: in std_logic; 
 	MR, MW 		: in std_logic; 

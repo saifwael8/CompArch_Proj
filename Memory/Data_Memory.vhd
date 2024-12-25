@@ -3,9 +3,6 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity Data_Memory is 
-generic( 
-	address_bits : integer := 12; 
-	word_width : integer := 16 ); 
 port( 
 	clk 		: in std_logic; 
 	MR, MW 		: in std_logic; 
@@ -18,7 +15,7 @@ end entity;
 
 ARCHITECTURE Data_Memory_arch OF Data_Memory IS
 
-TYPE Ram_type IS ARRAY(4095 DOWNTO 0) OF STD_LOGIC_VECTOR(word_width-1 DOWNTO 0);
+TYPE Ram_type IS ARRAY(0 TO 4095) OF STD_LOGIC_VECTOR(15 DOWNTO 0);
 SIGNAL memory: Ram_type := (others => (others => '0'));
 
 BEGIN
