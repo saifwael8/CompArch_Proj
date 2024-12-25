@@ -22,7 +22,8 @@ port(
 		EM_RTI: in std_logic;
 		
 		PC_out, ALU_Out: out std_logic_vector(15 downto 0);
-		PCSrc: out std_logic
+		PCSrc: out std_logic;
+		RD2_out: out std_logic_vector(15 downto 0)
 		);
 end entity;
 
@@ -48,7 +49,7 @@ port( clk: in std_logic;
 
 end component;
 
-Signal OP1, OP2, Imm_mux, ALU_Result: std_logic_vector(15 downto 0);
+Signal OP1, OP2, RD2_mux, ALU_Result: std_logic_vector(15 downto 0);
 Signal ALU_Flags, CCR_Flags: std_logic_vector(2 downto 0);
 Signal Flags_mux: std_logic;
 
@@ -59,14 +60,16 @@ with OP1_Selector select OP1 <=
 	Mem_to_ALU when "01",
 	RD1 when others;
 
-with Control_Bus(20) select Imm_mux <=
-	RD2 when '0',
+with Control_Bus(20) select OP2 <=
+	RD2_mux when '0',
 	Immediate when others;
 
-with OP2_Selector select OP2 <=
+with OP2_Selector select RD2_mux <=
 	ALU_to_ALU when "10",
 	Mem_to_ALU when "01",
-	Imm_mux when others;
+	RD2 when others;	
+
+RD2_out <= RD2_mux;
 	
 AL: ALU Port Map (Control_Bus(19 downto 16), OP1, OP2, Control_Bus(13), ALU_Result, ALU_Flags);
 
