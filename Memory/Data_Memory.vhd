@@ -3,9 +3,6 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity Data_Memory is 
-generic( 
-	address_bits : integer := 12; 
-	word_width : integer := 16 ); 
 port( 
 	clk 		: in std_logic; 
 	MR, MW 		: in std_logic; 
