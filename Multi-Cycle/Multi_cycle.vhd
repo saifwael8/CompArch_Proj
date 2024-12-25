@@ -222,6 +222,7 @@ signal opcode: std_logic_vector(4 downto 0); -- from FD reg to Decode
 signal RA1: std_logic_vector(2 downto 0); -- from FD reg to Decode
 signal RA2: std_logic_vector(2 downto 0); -- from FD reg to Decode
 signal WA: std_logic_vector(2 downto 0); -- from FD reg to Decode
+signal instruction_d: std_logic_vector(15 downto 0); -- from FD reg to Decode
 signal pc_outfd: std_logic_vector(15 downto 0); -- from FD reg to Decode
 signal ctrl_bus_d: std_logic_vector(23 downto 0); -- from Decode to DE reg
 signal flush_br: std_logic := '0'; -- from Decode to DE reg
@@ -276,7 +277,8 @@ BEGIN
 
 F: Fetch PORT MAP(clk, pc_src, invld_mem, SP_ex, reset, stall, WD, instruction, immediate, pc_outf);
 FD: FD_reg PORT MAP(clk, flush, stall, instruction, immediate, pc_outf, opcode, RA1, RA2, WA, pc_outfd);
-D: Decode PORT MAP(clk, instruction, pc_src, WA_mw, WD_WB, ctrl_bus_mw(23), ctrl_bus_d, flush_br, RD1, RD2);
+instruction_d <= opcode & WA & RA1 & RA2 & "00";
+D: Decode PORT MAP(clk, instruction_d, pc_src, WA_mw, WD_WB, ctrl_bus_mw(23), ctrl_bus_d, flush_br, RD1, RD2);
 DE: DE_reg PORT MAP(clk, flush, stall, ctrl_bus_d, RD1, RD2, immediate, RA1, RA2, WA, pc_outfd, ctrl_bus_e, RD1_e, RD2_e, immediate_e, RA1_e, RA2_e, WA_e, pc_outde);
 exception <= SP_ex or invld_mem;
 HD: Hazard_Detection PORT MAP(exception, RA1, RA2, WA_e, stall, flush_ex);
