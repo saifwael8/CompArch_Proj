@@ -121,7 +121,8 @@ port(
         EM_RTI: in std_logic;
         
         PC_out, ALU_Out: out std_logic_vector(15 downto 0);
-        PCSrc: out std_logic
+        PCSrc: out std_logic;
+        RD2_out: out std_logic_vector(15 downto 0)
         );
 end COMPONENT;
 
@@ -232,6 +233,7 @@ signal RD2: std_logic_vector(15 downto 0); -- from Decode to DE reg
 signal ctrl_bus_e: std_logic_vector(23 downto 0); -- from DE reg to Execute
 signal RD1_e: std_logic_vector(15 downto 0); -- from DE reg to Execute
 signal RD2_e: std_logic_vector(15 downto 0); -- from DE reg to Execute
+signal RD2_e_out: std_logic_vector(15 downto 0); -- from DE reg to Execute
 signal immediate_e: std_logic_vector(15 downto 0); -- from DE reg to Execute
 signal RA1_e: std_logic_vector(2 downto 0); -- from DE reg to Execute
 signal RA2_e: std_logic_vector(2 downto 0); -- from DE reg to Execute
@@ -242,8 +244,6 @@ signal exception: std_logic; -- from Fetch to Hazard Detection
 signal flush_ex: std_logic:= '0'; -- from Hazard Detection to DE reg
 signal flush: std_logic:= '0'; -- flush_br or flush_ex
 
-signal mem_to_alu: std_logic_vector(15 downto 0); -- from Memory to Execute
-signal alu_to_alu: std_logic_vector(15 downto 0); -- from Execute to Execute
 signal OP1_Selector: std_logic_vector(1 downto 0); -- from Forwarding Unit to Execute
 signal OP2_Selector: std_logic_vector(1 downto 0); -- from Forwarding Unit to Execute
 signal pc_oute: std_logic_vector(15 downto 0); -- from Execute to EM reg
@@ -283,8 +283,8 @@ DE: DE_reg PORT MAP(clk, flush, stall, ctrl_bus_d, RD1, RD2, immediate, RA1, RA2
 exception <= SP_ex or invld_mem;
 HD: Hazard_Detection PORT MAP(exception, RA1, RA2, WA_e, stall, flush_ex);
 flush <= flush_br or flush_ex;
-E: Execute PORT MAP(clk, ctrl_bus_e, RD1_e, mem_to_alu, alu_to_alu, RD2_e, immediate_e, inport, restore_flags, OP1_Selector, OP2_Selector, pc_outde, ctrl_bus_em(0), pc_oute, alu_out, pc_src_e);
-EM: EM_reg PORT MAP(clk, flush, stall, ctrl_bus_e, RD2_e, WA_e, alu_out, pc_oute, pc_src_e, ctrl_bus_em, RD2_em, WA_em, alu_out_em, pc_outem, pc_src_em);
+E: Execute PORT MAP(clk, ctrl_bus_e, RD1_e, WD_WB, alu_out_em, RD2_e, immediate_e, inport, restore_flags, OP1_Selector, OP2_Selector, pc_outde, ctrl_bus_em(0), pc_oute, alu_out, pc_src_e, RD2_e_out);
+EM: EM_reg PORT MAP(clk, flush, stall, ctrl_bus_e, RD2_e_out, WA_e, alu_out, pc_oute, pc_src_e, ctrl_bus_em, RD2_em, WA_em, alu_out_em, pc_outem, pc_src_em);
 M: Memory PORT MAP(clk, ctrl_bus_em, alu_out_em, RD2_em, pc_outem, SP_address, Memory_address, From_Memory, restore_flags);
 MWB: MWB_reg PORT MAP(clk, stall, pc_src_em, ctrl_bus_em, From_Memory, alu_out_em, WA_em, ctrl_bus_mw, From_Memory_out, From_ALU_out, WA_mw, pc_src_mw);
 FU: Forwarding_Unit PORT MAP(RA1_e, RA2_e, WA_em, WA_mw, ctrl_bus_em(23), ctrl_bus_mw(23), OP1_Selector, OP2_Selector);

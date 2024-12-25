@@ -15,7 +15,7 @@ end entity;
 
 ARCHITECTURE Data_Memory_arch OF Data_Memory IS
 
-TYPE Ram_type IS ARRAY(0 TO 4095) OF STD_LOGIC_VECTOR(word_width-1 DOWNTO 0);
+TYPE Ram_type IS ARRAY(0 TO 4095) OF STD_LOGIC_VECTOR(15 DOWNTO 0);
 SIGNAL memory: Ram_type := (others => (others => '0'));
 
 BEGIN
