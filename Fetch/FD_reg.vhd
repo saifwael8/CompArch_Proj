@@ -16,7 +16,8 @@ port(
 		RA1: out std_logic_vector(2 downto 0);
 		RA2: out std_logic_vector(2 downto 0);
 		WA: out std_logic_vector(2 downto 0);
-		PC_address_out: out std_logic_vector(15 downto 0)
+		PC_address_out: out std_logic_vector(15 downto 0);
+		imm_out: out std_logic_vector(15 downto 0)
 	);	
 end entity;
 
@@ -27,12 +28,13 @@ BEGIN
 PROCESS(clk,flush)
 BEGIN
 
-	IF (flush= '0' AND rising_edge(clk)) then
+	IF (flush= '1' AND rising_edge(clk)) then
 			opcode <= "00000";
 			RA1 <= "000";
 			RA2 <= "000";
 			WA <= "000";
 			PC_address_out <= PC_address_in;
+			imm_out <= (others => '0');
 
 	ELSIF rising_edge(clk) then
 		IF (stall = '0') then
@@ -41,6 +43,7 @@ BEGIN
 			RA2 <= instruction(4 downto 2);
 			WA <= instruction(10 downto 8);
 			PC_address_out <= PC_address_in;
+			imm_out <= immediate;
 		END IF;
 	END IF;
 	
