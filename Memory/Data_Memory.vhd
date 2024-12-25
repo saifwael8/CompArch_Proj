@@ -27,9 +27,9 @@ BEGIN
 		IF (MW = '1') then
 			memory(to_integer(unsigned(Memory_Address))) <= Data;
 		END IF;
-		IF (MR = '1') then
-			From_Memory <= memory(to_integer(unsigned(Memory_Address)));
-		END IF;
+	END IF;
+	IF (MR = '1') then
+		From_Memory <= memory(to_integer(unsigned(Memory_Address)));
 	END IF;
 	
 END PROCESS;
