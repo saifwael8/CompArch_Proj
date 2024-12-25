@@ -21,7 +21,7 @@ end entity;
 ARCHITECTURE PC_Decoder_arch OF PC_Decoder IS
 signal bit_10: std_logic_vector(15 downto 0);
 BEGIN
-PROCESS(instruction, PC_Src, invalid_mem, SP_exception, reset)
+PROCESS(stall, instruction, PC_Src, invalid_mem, SP_exception, reset)
 BEGIN
     IF (reset = '1') then
         PC_selector <= "100";
