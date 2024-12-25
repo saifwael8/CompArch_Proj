@@ -18,7 +18,7 @@ end entity;
 
 ARCHITECTURE Data_Memory_arch OF Data_Memory IS
 
-TYPE Ram_type IS ARRAY(4095 DOWNTO 0) OF STD_LOGIC_VECTOR(word_width-1 DOWNTO 0);
+TYPE Ram_type IS ARRAY(0 TO 4095) OF STD_LOGIC_VECTOR(word_width-1 DOWNTO 0);
 SIGNAL memory: Ram_type := (others => (others => '0'));
 
 BEGIN
@@ -30,9 +30,9 @@ BEGIN
 		IF (MW = '1') then
 			memory(to_integer(unsigned(Memory_Address))) <= Data;
 		END IF;
-		IF (MR = '1') then
-			From_Memory <= memory(to_integer(unsigned(Memory_Address)));
 		END IF;
+	IF (MR = '1') then
+		From_Memory <= memory(to_integer(unsigned(Memory_Address)));
 	END IF;
 	
 END PROCESS;
