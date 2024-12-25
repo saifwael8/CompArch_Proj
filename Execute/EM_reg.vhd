@@ -5,7 +5,6 @@ use ieee.numeric_std.all;
 entity EM_reg is
 port( clk: in std_logic;
 		flush: in std_logic;
-		stall: in std_logic;
 		
 		Control_Bus: in std_logic_vector(23 downto 0);
 		RD2: in std_logic_vector(15 downto 0);
@@ -34,14 +33,12 @@ BEGIN
 			Control_Bus_out <= (others => '0');
 
 	ELSIF rising_edge(clk) then
-		IF (stall = '0') then
 			Control_Bus_out <= Control_Bus;
 			RD2_out <= RD2;
 			WA_out <= WA;
 			PC_1_out <= PC_1;
 			ALU_out <= ALU_Result;
 			PCSrc_out <= PCSrc;
-		END IF;
 	END IF;
 	
 END PROCESS;
