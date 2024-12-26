@@ -1,10 +1,6 @@
-# all numbers are in hexadecimal
-# numbers take the format [0-9][0-9A-F]*, i.e. 1, 50, 5FA, 0DEAD, 0BEEF, etc. but not DEAD or BEEF
-# this is a commented line
-# Your assembler should be indifferent to indentation
-.ORG 0 #this means the the following line would be at address  0 , and this is the reset address
+
+.ORG 0  #this is the reset address
 200
-#you should ignore empty lines
 
 .ORG 1  #this is the address of the empty stack exception handler
 400
@@ -13,77 +9,86 @@
 600
 
 # for those who are implementing the bonus (dynamic vector table):
-.ORG 3  #this is the address of INT0
-800
+#.ORG 3  #this is the address of INT0
+#800
 
-.ORG 4  #this is the address of INT1
-0A00
+#.ORG 4  #this is the address of INT1
+#0A00
 
 # for those who are implementing the bonus (dynamic vector table):
-# .ORG 3
-# 100
-# .ORG 100
-# 800
-# 0A00
+ .ORG 3
+ 100
+ .ORG 100
+ 800
+ 0A00
 
 # Empty Stack Exception Handler
 .ORG 400
-	PUSH R0
-	LDM R0, 0DEAD
-	OUT R0
-	POP R0
-	HLT
+    LDM R0,0FFFF
+    JMP R0          # Causes Invalid Memory Address Exception
+    HLT             # Should not be executed
 
 # Invalid Memory Address Exception Handler
 .ORG 600
-	PUSH R0
-	LDM R0, 0C0DE
-	OUT R0
-	POP R0
-	HLT
+    LDM R0,0ABCD
+    HLT             # Should be executed, End of testcase :)
 
 # INT0
 .ORG 800
-	PUSH R0
-	LDM R0, 0CAFE
-	OUT R0
-	POP R0
-	RTI
+    LDM R0,2
+    LDM R1,0
+    SUB R1,R1,R0
+    LDM R2,809      # Address of the JZ
+    LDM R3,80C      # Address of the RTI
+    JZ R3           # For loop that should execute 2 times
+    INC R1,R1
+    JMP R2
+    RTI
 
 # INT1
 .ORG 0A00
-	PUSH R0
-	LDM R0, 0BABE
-	OUT R0
-	POP R0
-	RTI
-
+    LDM R0,1
+    LDM R1,2
+    LDM R2,0A08      # Address of the JN
+    LDM R3,0A0B      # Address of the RTI
+    JN R3            # For loop that should execute 3 times
+    SUB R1,R1,R0
+    JMP R2
+    RTI
 
 # Main loop
 .ORG 200
-	IN R0
-	PUSH R0
+    NOP
+    NOP
 	POP R1
-	IN R2
-	STD R1,201(R2)
-	LDD R3,201(R2)
-	OUT R3
-	LDM R3, 300
-	CALL R3 # Function call
-	OUT R1 # Display output
-	LDM R1, 200 # Main loop address
-	JMP R1 # Main loop jump
-
+    NOP            # Should be preserved
+	NOP
+	NOP
+	JMP R1
+    NOP
+    NOP
+    NOP           # Should be executed and succeed
+    HLT             # Should not be executed
+	
 # Function
 .ORG 300
-	LDM R2, 30F # RET address
-	LDM R3, 30A # Loop beginning address
-	LDM R1, 0
-	ADD R0, R0, R1 # R0 = R0 + 0
-	JZ R2 # if (R0 == 0) return
-	IADD R0, R0, 0FFFF # R0 = R0 - 1
-	ADD R1, R1, R0
-	INC R1
-	IADD R0, R0, 0FFFF # R0 = R0 - 1
-	JC R3 # if (R0 != -1) goto Loop beginning
-	RET
+    LDM R5,31A      # RET address
+    LDM R6,300      # Start of function address
+    LDM R0,5        # Some Value
+    PUSH R0
+    LDM R1,0A0
+	NOP
+    LDM R4,0A5
+    POP R2
+    STD R2,5(R1)    # Load-use here
+	NOP
+	NOP
+	NOP
+    LDD R3,0(R4)
+	NOP
+	NOP
+	NOP
+    SUB R0,R0,R3    # Should be zero
+    NOP
+    NOP
+    RET             # Executes normally first time, then causes empty stack exception the second time

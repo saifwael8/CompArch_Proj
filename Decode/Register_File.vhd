@@ -14,7 +14,7 @@ port(
 	RD1, RD2 	: out std_logic_vector(word_width-1 downto 0) ); 
 	
 end entity; 
-
+	
 ARCHITECTURE Register_File_arch OF Register_File IS
 
 TYPE Ram_type IS ARRAY((2**address_bits)-1 DOWNTO 0) OF STD_LOGIC_VECTOR(word_width-1 DOWNTO 0);

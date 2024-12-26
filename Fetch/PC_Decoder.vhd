@@ -31,7 +31,7 @@ BEGIN
         PC_selector <= "110";
     ELSIF (PC_Src = '1') then
         PC_selector <= "011";
-    ELSIF (instruction(15 downto 11) > "0100" and instruction(15 downto 11) < "01101") then
+    ELSIF (instruction(15 downto 11) > "01000" and instruction(15 downto 11) < "01101") then
         PC_selector <= "010";
     ELSIF ((instruction(15 downto 11) = "00001")  or (stall = '1'))then
         PC_selector <= "000";

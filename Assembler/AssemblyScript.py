@@ -183,8 +183,8 @@ def assemble_line(line):
         if opcode == "INT":
             if len(parts) < 2:
                 raise ValueError(f"Instruction {opcode} requires 1 operand.")
-            i = register_to_bin(parts[1])
-            return f"{OPCODES[opcode]}{i}0000000000"
+            i = parts[1]
+            return f"{OPCODES[opcode]}"+str(i)+"0000000000"
 
     else:
         raise ValueError(f"Unsupported instruction: {opcode}")
@@ -242,7 +242,7 @@ def assemble_file(input_file, output_file):
         if(file_type == 'S'):
             for address in sorted(machine_code):
                 if(machine_code[address] != "0000000000000000"):
-                    outfile.write(f"mem load -filltype value -filldata  {machine_code[address]} -fillradix symbolic /singlecycle/F/inst_mem/memory({address})\n")
+                    outfile.write(f"mem load -filltype value -filldata  {machine_code[address]} -fillradix symbolic /SingleCycle/F/inst_mem/memory({address})\n")
         else:
             for address in sorted(machine_code):
                 if(machine_code[address] != "0000000000000000"):
