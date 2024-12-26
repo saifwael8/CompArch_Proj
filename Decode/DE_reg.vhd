@@ -47,6 +47,8 @@ BEGIN
 			RA2_out <= RA2;
 			WA_out <= WA;
 			PC_1_out <= PC_1;
+		else
+			Control_Bus_out <= (others => '0');
 		END IF;
 	END IF;
 	
