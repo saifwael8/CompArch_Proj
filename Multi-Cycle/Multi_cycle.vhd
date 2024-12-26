@@ -13,7 +13,7 @@ PORT(
 );
 END ENTITY;
 
-ARCHITECTURE Multi_cycle_arch OF Multi_cycle IS
+ARCHITECTURE multi_cycle_arch OF Multi_cycle IS
 
 COMPONENT Fetch IS
 port( 
@@ -95,15 +95,15 @@ port(
 
 COMPONENT Hazard_Detection is 
 port(
-		  clk: in std_logic;
-        exception: in std_logic;
-        FD_RA1: in std_logic_vector(2 downto 0);
-        FD_RA2: in std_logic_vector(2 downto 0);
-        DE_WA: in std_logic_vector(2 downto 0);
-        DE_MR: in std_logic;
+    clk: in std_logic;
+    exception: in std_logic;
+    FD_RA1: in std_logic_vector(2 downto 0);
+    FD_RA2: in std_logic_vector(2 downto 0);
+    DE_WA: in std_logic_vector(2 downto 0);
+    DE_MR: in std_logic;
 
-        stall: out std_logic;
-        Flush_exc: out std_logic
+    stall: out std_logic;
+    Flush_exc: out std_logic
 );
 end COMPONENT;
 
@@ -250,6 +250,7 @@ signal alu_out: std_logic_vector(15 downto 0); -- from Execute to EM reg
 signal pc_src_e: std_logic; -- from Execute to EM reg
 
 signal ctrl_bus_em: std_logic_vector(23 downto 0); -- from EM reg to Memory
+signal ctrl_bus_em2: std_logic_vector(23 downto 0); -- from EM reg to Memory
 signal RD2_em: std_logic_vector(15 downto 0); -- from EM reg to Memory
 signal WA_em: std_logic_vector(2 downto 0); -- from EM reg to Memory
 signal alu_out_em: std_logic_vector(15 downto 0); -- from EM reg to Memory
@@ -274,16 +275,21 @@ signal Save_EPC: std_logic; -- from Exception Handling to EPC
 signal EPC_out: std_logic_vector(15 downto 0); -- from EPC to Exception Handling
 BEGIN
 
-F: Fetch PORT MAP(clk, pc_src_mw, invld_mem, SP_ex, reset, stall, WD_WB, instruction, immediate, pc_outf);
+F: Fetch PORT MAP(clk, pc_src_em, invld_mem, SP_ex, reset, stall, alu_out_em, instruction, immediate, pc_outf);
 FD: FD_reg PORT MAP(clk, flush, stall, instruction, immediate, pc_outf, opcode, RA1, RA2, WA, pc_outfd, immediate_fd);
 instruction_d <= opcode & WA & RA1 & RA2 & "00";
-D: Decode PORT MAP(clk, instruction_d, pc_src_e, WA_mw, WD_WB, ctrl_bus_mw(23), ctrl_bus_d, flush_br, RD1, RD2);
+D: Decode PORT MAP(clk, instruction_d, pc_src_em, WA_mw, WD_WB, ctrl_bus_mw(23), ctrl_bus_d, flush_br, RD1, RD2);
 DE: DE_reg PORT MAP(clk, flush, stall, ctrl_bus_d, RD1, RD2, immediate_fd, RA1, RA2, WA, pc_outfd, ctrl_bus_e, RD1_e, RD2_e, immediate_e, RA1_e, RA2_e, WA_e, pc_outde);
 exception <= SP_ex or invld_mem;
 HD: Hazard_Detection PORT MAP(clk, exception, RA1, RA2, WA_e, ctrl_bus_e(21) ,stall, flush_ex);
 flush <= flush_br or flush_ex;
 E: Execute PORT MAP(clk, ctrl_bus_e, RD1_e, WD_WB, alu_out_em, RD2_e, immediate_e, inport, restore_flags, OP1_Selector, OP2_Selector, pc_outde, ctrl_bus_em(0), pc_oute, alu_out, pc_src_e, RD2_e_out);
-EM: EM_reg PORT MAP(clk, flush_ex, ctrl_bus_e, RD2_e_out, WA_e, alu_out, pc_oute, pc_src_e, ctrl_bus_em, RD2_em, WA_em, alu_out_em, pc_outem, pc_src_em);
+EM: EM_reg PORT MAP(clk, flush_ex, ctrl_bus_e, RD2_e_out, WA_e, alu_out, pc_oute, pc_src_e, ctrl_bus_em2, RD2_em, WA_em, alu_out_em, pc_outem, pc_src_em);
+
+with flush_br select ctrl_bus_em <=
+	(others => '0') when '1',
+	ctrl_bus_em2 when others;
+
 M: Memory PORT MAP(clk, ctrl_bus_em, alu_out_em, RD2_em, pc_outem, SP_address, Memory_address, From_Memory, restore_flags);
 MWB: MWB_reg PORT MAP(clk, pc_src_em, ctrl_bus_em, From_Memory, alu_out_em, WA_em, ctrl_bus_mw, From_Memory_out, From_ALU_out, WA_mw, pc_src_mw);
 FU: Forwarding_Unit PORT MAP(RA1_e, RA2_e, WA_em, WA_mw, ctrl_bus_em(23), ctrl_bus_mw(23), OP1_Selector, OP2_Selector);
